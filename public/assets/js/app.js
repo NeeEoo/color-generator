@@ -83,8 +83,8 @@ function copy(type, text) {
   $tempTextField.remove();
 }
 
-function showToast() {
-  var alert = "<div class='alert alert-success' role='alert'>Color code copied to clipboard.</div>";
+function showToast(type, text) {
+  var alert = "<div class='alert alert-" + type + "' role='alert'>" + text + "</div>";
   $(".container-fluid").append(alert);
   $(".alert").animate({
     opacity: 0
@@ -99,7 +99,7 @@ function init() {
   $(".color-value").click(function(e) {
     var text = $(e.target).text();
     copy($(e.target).data("format"), text);
-    showToast();
+    showToast("success", "Color code copied to clipboard.");
   });
 
   $(".color-column-lock").click(function(e) {
@@ -121,10 +121,11 @@ function init() {
   $("#submitNewColor").click(function(e) {
     setNewColor(getNewColor(e));
   });
+
+  loadAllPalettes();
 }
 
 function setNewColor(values) {
-  $("#editColorModal").modal("show");
   var column = $(".color-column:eq(" + (parseInt(values[1]) - 1) + ")");
   var rgb = JSON.parse("[" + values[0] + "]");
   $(column).find(".color-rgb").text(`(${rgb})`);
@@ -150,4 +151,109 @@ function switchTheme() {
   $(".fa-moon").toggleClass("d-none");
   $(".fa-sun").toggleClass("d-none");
   $(".color-column-labels").toggleClass("text-white");
+}
+
+// TODO: generate random keys to name each palette - save keys to localStorage object called 'paletteKeys' - then load all keys in loadAllPalettes() and use those to load palettes into modal
+function savePalette() {
+  var paletteName = $("#inputPaletteName").val();
+  if (paletteName === null || paletteName == "undefined") {
+    alert("Error: You must insert a name for this palette.");
+  } else {
+    if (typeof(Storage) !== "undefined") {
+      // Query object of all rgb colors and store text values in new object
+      var rgbDOMObject = $(".color-rgb");
+      var rgbStorageObject = {
+        "0": $(rgbDOMObject[0]).text().replace("(", "").replace(")", ""),
+        "1": $(rgbDOMObject[1]).text().replace("(", "").replace(")", ""),
+        "2": $(rgbDOMObject[2]).text().replace("(", "").replace(")", ""),
+        "3": $(rgbDOMObject[3]).text().replace("(", "").replace(")", ""),
+        "4": $(rgbDOMObject[4]).text().replace("(", "").replace(")", "")
+      };
+      // Generate random key, ensure it doesn't exist already, then save the key in storage
+      var randomKey = generateRandomKey();
+      var keysObject = localStorage.getItem("paletteKeys");
+      if (keysObject === null) {
+        var newKeysObject = {};
+        newKeysObject[paletteName] = randomKey;
+      } else {
+        var newKeysObject = JSON.parse(keysObject);
+        newKeysObject[paletteName] = randomKey;
+      }
+      localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
+
+      // Save color palette object
+      localStorage.setItem(randomKey, JSON.stringify(rgbStorageObject));
+      $("#savedPalettesModal").find(".modal-body").append("<button class='btn btn-outline-secondary my-2 w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button>");
+      showToast("success", "Color palette saved.");
+
+    } else {
+      alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
+    }
+  }
+}
+
+function loadAllPalettes() {
+  if (typeof(Storage) !== "undefined") {
+    var fetchedData = localStorage.getItem("paletteKeys");
+    if (fetchedData === null) {
+      console.log("Error: No palettes exist.");
+    } else {
+      $.each(JSON.parse(fetchedData), function(key, value) {
+        var palette = localStorage.getItem(key);
+        $("#savedPalettesModal").find(".modal-body").append("<button class='btn btn-outline-secondary my-2 w-100' onclick='loadPalette(" + value + ")'>" + key + "</button>");
+        // setNewColor([value, newKey]);
+        $("#editColorModal").modal("hide");
+      });
+      showToast("success", "Color palettes loaded.");
+    }
+  } else {
+    alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
+  }
+}
+
+function loadPalette(requestedKey) {
+  var fetchedData = localStorage.getItem("paletteKeys");
+  $.each(JSON.parse(fetchedData), function(key, value) {
+    var newValue = parseInt(value, 10);
+    if (requestedKey === newValue) {
+      var palette = localStorage.getItem(value);
+      $.each(JSON.parse(palette), function(subKey, subValue) {
+        var col = parseInt(subKey, 10) + 1;
+        setNewColor([subValue, col]);
+      });
+    }
+    $("#editColorModal").modal("hide");
+  });
+}
+
+function generateRandomKey() {
+  // Generate random key
+  var randomKey = Math.floor((Math.random() * 9007199254740992) + 1);
+  // Check if random key exists (up to 100 times)
+  for (var i = 0; i < 100; i++) {
+    // If the key exists, generate a new key
+    if (checkKey(randomKey) === true) {
+      randomKey = Math.floor((Math.random() * 9007199254740992) + 1);
+    }
+    // If the key does not exist, break the loop and return the key
+    else {
+      break;
+    }
+  }
+  return randomKey;
+}
+
+function checkKey(key) {
+  // Fetch paletteKeys object
+  var keysObject = localStorage.getItem("paletteKeys");
+  // If object is null, it doesn't exist yet
+  if (keysObject !== null) {
+    // If object exists, parse it and check to see if the key exists
+    var tempObject = JSON.parse(keysObject);
+    if (tempObject.hasOwnProperty(key.toString())) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
