@@ -5,4 +5,4 @@ This app generates 5 random colors using the RGB, hex, and CMYK formats. A new p
 Hosted at: [Color Generator](https://rogue-cyborg.github.io/color-generator/)
 
 ## Preview
-![Preview Image](https://github.com/rogue-cyborg/color-generator/blob/master/preview.png)
+![Preview Image](https://gilab.com/rogue-cyborg/color-generator/blob/master/preview.png)
