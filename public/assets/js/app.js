@@ -260,10 +260,13 @@ function checkKey(key) {
 function saveImage() {
   $("#saveImageModal img").remove();
   $(".color-column-toolbar").hide();
-  html2canvas(document.getElementsByClassName("container-fluid")[0], {backgroundColor:"#000000"}).then(function(canvas) {
+
+  var bgColor = $("body").hasClass("bg-secondary") ? "#000000" : "#FFFFFF";
+
+  html2canvas(document.getElementsByClassName("container-fluid")[0], {backgroundColor:bgColor}).then(function(canvas) {
+    $(".color-column-toolbar").show();
     var img = canvas.toDataURL("image/png");
     $("#saveImageModal").modal("show");
     $("#saveImageModal .modal-body").append('<img id="palette-image" class="img-fluid" src="'+img+'"/>');
-    $(".color-column-toolbar").show();
   });
 }
