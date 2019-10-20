@@ -84,9 +84,9 @@ function copy(type, text) {
 }
 
 function showToast(type, text) {
-  var alert = "<div class='alert alert-" + type + "' role='alert'>" + text + "</div>";
+  var alert = "<div class='toast-alert alert alert-" + type + "' role='alert'>" + text + "</div>";
   $(".container-fluid").append(alert);
-  $(".alert").animate({
+  $(".toast-alert").animate({
     opacity: 0
   }, 2000, function() {
     $(this).remove();
@@ -255,4 +255,16 @@ function checkKey(key) {
       return false;
     }
   }
+}
+
+function saveImage() {
+  $(".color-column-toolbar").hide();
+  html2canvas(document.getElementsByClassName("container-fluid")[0], {backgroundColor:"#000000"}).then(function(canvas) {
+    // document.body.appendChild(canvas);
+    var img = canvas.toDataURL("image/png");
+    $("#saveImageModal").modal("show");
+    $("#saveImageModal .modal-body").append('<img id="palette-image" class="img-fluid" src="'+img+'"/>');
+    // document.write('<img src="'+img+'"/>');
+    $(".color-column-toolbar").show();
+  });
 }
