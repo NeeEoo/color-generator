@@ -258,7 +258,7 @@ function checkKey(key) {
 }
 
 function saveImage() {
-  $("#saveImageModal .modal-body").empty();
+  $("#saveImageModal img").remove();
   $(".color-column-toolbar").hide();
   html2canvas(document.getElementsByClassName("container-fluid")[0], {backgroundColor:"#000000"}).then(function(canvas) {
     var img = canvas.toDataURL("image/png");
