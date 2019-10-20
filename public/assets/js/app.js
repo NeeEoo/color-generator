@@ -153,11 +153,10 @@ function switchTheme() {
   $(".color-column-labels").toggleClass("text-white");
 }
 
-// TODO: generate random keys to name each palette - save keys to localStorage object called 'paletteKeys' - then load all keys in loadAllPalettes() and use those to load palettes into modal
 function savePalette() {
   var paletteName = $("#inputPaletteName").val();
-  if (paletteName === null || paletteName == "undefined") {
-    alert("Error: You must insert a name for this palette.");
+  if (paletteName === null || paletteName == "undefined" || paletteName == "") {
+    alert("Error: You must enter a valid name for this palette.");
   } else {
     if (typeof(Storage) !== "undefined") {
       // Query object of all rgb colors and store text values in new object
