@@ -258,13 +258,12 @@ function checkKey(key) {
 }
 
 function saveImage() {
+  $("#saveImageModal .modal-body").empty();
   $(".color-column-toolbar").hide();
   html2canvas(document.getElementsByClassName("container-fluid")[0], {backgroundColor:"#000000"}).then(function(canvas) {
-    // document.body.appendChild(canvas);
     var img = canvas.toDataURL("image/png");
     $("#saveImageModal").modal("show");
     $("#saveImageModal .modal-body").append('<img id="palette-image" class="img-fluid" src="'+img+'"/>');
-    // document.write('<img src="'+img+'"/>');
     $(".color-column-toolbar").show();
   });
 }
