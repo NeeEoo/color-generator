@@ -20,6 +20,9 @@
         <a class="nav-link" href="https://gitlab.com/rogue-cyborg/color-generator" title="View on GitLab"><i class="fab fa-gitlab mx-2"></i></a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="#" onclick="saveImage()" title="Save as Image"><i class="far fa-image mx-2"></i></a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="modal" data-target="#editColorModal" title="Edit Color"><i class="fas fa-edit mx-2"></i></a>
       </li>
       <li class="nav-item">
@@ -127,7 +130,7 @@
     </div>
   </div><!-- ./modal -->
 
-  <!-- Color Editing Modal -->
+  <!-- Save Palettes Modal -->
   <div class="modal fade" id="savedPalettesModal" tabindex="-1" role="dialog" aria-labelledby="editColorModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -158,10 +161,33 @@
     </div>
   </div><!-- ./modal -->
 
+  <!-- Save Image Modal -->
+  <div class="modal fade" id="saveImageModal" tabindex="-1" role="dialog" aria-labelledby="saveImageModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="saveImageModalTitle">Palette Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-success" role="alert">
+            <h6 class="modal-subtitle m-0"><strong>Pro-tip:</strong> Right click to save your image.</h6>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- ./modal -->
+
   <!-- JavaScript -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="./assets/js/html2canvas.min.js"></script>
   <script src="./assets/js/app.js"></script>
 </body>
 
