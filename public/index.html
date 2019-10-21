@@ -131,11 +131,11 @@
   </div><!-- ./modal -->
 
   <!-- Save Palettes Modal -->
-  <div class="modal fade" id="savedPalettesModal" tabindex="-1" role="dialog" aria-labelledby="editColorModalTitle" aria-hidden="true">
+  <div class="modal fade" id="savedPalettesModal" tabindex="-1" role="dialog" aria-labelledby="savedPalettesModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editColorModalTitle">Save Your Palettes</h5>
+          <h5 class="modal-title" id="savedPalettesModalTitle">Save Your Palettes</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -150,12 +150,13 @@
             </div>
           </div><!-- ./form-row -->
           <hr>
-          <div class="my-4">
+          <div class="my-4" id="savedPalettesBody">
             <p class="lead text-center">Saved Palettes</p>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-danger ml-0 mr-auto" onclick="deleteAllPalettes()">Delete Palettes</button>
+          <button type="button" class="btn btn-outline-secondary mr-0 ml-auto" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>

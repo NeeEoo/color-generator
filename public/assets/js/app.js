@@ -154,10 +154,54 @@ function switchTheme() {
 }
 
 function savePalette() {
+  // Get palette names object and user input of new palette name
+  var keysObject = JSON.parse(localStorage.getItem("paletteKeys"));
   var paletteName = $("#inputPaletteName").val();
+  var nameCheck = false;
+  // Check palette name exists
+  if (keysObject !== null && paletteName in keysObject) {
+    nameCheck = true;
+  }
+  // If the input name is null or empty, show an error alert
   if (paletteName === null || paletteName == "undefined" || paletteName == "") {
     alert("Error: You must enter a valid name for this palette.");
-  } else {
+  }
+  // If the name exists, ask user to confirm
+  else if (keysObject != null && nameCheck === true) {
+    var userConfirmation = confirm("Palette name exists. Do you want to overwrite this palette?");
+    // If the user confirms, save the palette
+    if (userConfirmation) {
+      if (typeof(Storage) !== "undefined") {
+        // Query object of all rgb colors and store text values in new object
+        var rgbDOMObject = $(".color-rgb");
+        var rgbStorageObject = {
+          "0": $(rgbDOMObject[0]).text().replace("(", "").replace(")", ""),
+          "1": $(rgbDOMObject[1]).text().replace("(", "").replace(")", ""),
+          "2": $(rgbDOMObject[2]).text().replace("(", "").replace(")", ""),
+          "3": $(rgbDOMObject[3]).text().replace("(", "").replace(")", ""),
+          "4": $(rgbDOMObject[4]).text().replace("(", "").replace(")", "")
+        };
+        // Generate random key, ensure it doesn't exist already, then save the key in storage
+        var randomKey = generateRandomKey();
+        if (keysObject === null) {
+          var newKeysObject = {};
+          newKeysObject[paletteName] = randomKey;
+        } else {
+          var newKeysObject = keysObject;
+          newKeysObject[paletteName] = randomKey;
+        }
+        localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
+        // Save color palette object
+        localStorage.setItem(randomKey, JSON.stringify(rgbStorageObject));
+        $("#savedPalettesBody").append("<button class='btn btn-outline-secondary my-2 w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button>");
+        showToast("success", "Color palette saved.");
+      } else {
+        alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
+      }
+    }
+  }
+  // If the name doesn't exist, save palette
+  else {
     if (typeof(Storage) !== "undefined") {
       // Query object of all rgb colors and store text values in new object
       var rgbDOMObject = $(".color-rgb");
@@ -170,21 +214,18 @@ function savePalette() {
       };
       // Generate random key, ensure it doesn't exist already, then save the key in storage
       var randomKey = generateRandomKey();
-      var keysObject = localStorage.getItem("paletteKeys");
       if (keysObject === null) {
         var newKeysObject = {};
         newKeysObject[paletteName] = randomKey;
       } else {
-        var newKeysObject = JSON.parse(keysObject);
+        var newKeysObject = keysObject;
         newKeysObject[paletteName] = randomKey;
       }
       localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
-
       // Save color palette object
       localStorage.setItem(randomKey, JSON.stringify(rgbStorageObject));
-      $("#savedPalettesModal").find(".modal-body").append("<button class='btn btn-outline-secondary my-2 w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button>");
+      $("#savedPalettesBody").append("<div id='"+randomKey+"' class='my-2 d-flex'><button class='btn btn-outline-secondary w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + randomKey + ")'><i class='far fa-trash-alt'></i></button></div>");
       showToast("success", "Color palette saved.");
-
     } else {
       alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
     }
@@ -199,8 +240,7 @@ function loadAllPalettes() {
     } else {
       $.each(JSON.parse(fetchedData), function(key, value) {
         var palette = localStorage.getItem(key);
-        $("#savedPalettesModal").find(".modal-body").append("<button class='btn btn-outline-secondary my-2 w-100' onclick='loadPalette(" + value + ")'>" + key + "</button>");
-        // setNewColor([value, newKey]);
+        $("#savedPalettesBody").append("<div id='"+value+"' class='my-2 d-flex'><button class='btn btn-outline-secondary w-100' onclick='loadPalette(" + value + ")'>" + key + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + value + ")'><i class='far fa-trash-alt'></i></button></div>");
         $("#editColorModal").modal("hide");
       });
       showToast("success", "Color palettes loaded.");
@@ -223,6 +263,32 @@ function loadPalette(requestedKey) {
     }
     $("#editColorModal").modal("hide");
   });
+}
+
+function deleteAllPalettes() {
+  var confirmation = confirm("Are you sure you want to delete all palettes?");
+  if (confirmation) {
+    $("#savedPalettesBody button").remove();
+    localStorage.clear();
+  }
+}
+
+function deletePalette(id) {
+  var confirmation = confirm("Are you sure you want to delete this palette?");
+  if (confirmation) {
+    // Get name of palette by the id
+    var keysObject = JSON.parse(localStorage.getItem("paletteKeys"));
+    var name = getKeyByValue(keysObject, id);
+    // Remove the button
+    $("#" + id).remove();
+    // Remove local storage item
+    localStorage.removeItem(id);
+    // Remove item from paletteKeys
+    delete keysObject[name];
+    // Set new paletteKeys object
+    var newKeysObject = keysObject;
+    localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
+  }
 }
 
 function generateRandomKey() {
@@ -258,15 +324,27 @@ function checkKey(key) {
 }
 
 function saveImage() {
+  // Remove previous image
   $("#saveImageModal img").remove();
+  // Hide toolbar so it doesn't appear in screenshot
   $(".color-column-toolbar").hide();
-
+  // Set background color of canvas based on body
   var bgColor = $("body").hasClass("bg-secondary") ? "#000000" : "#FFFFFF";
-
+  // Get canvas and launch modal
   html2canvas(document.getElementsByClassName("container-fluid")[0], {backgroundColor:bgColor}).then(function(canvas) {
     $(".color-column-toolbar").show();
     var img = canvas.toDataURL("image/png");
     $("#saveImageModal").modal("show");
     $("#saveImageModal .modal-body").append('<img id="palette-image" class="img-fluid" src="'+img+'"/>');
   });
+}
+
+function getKeyByValue(object, value) {
+  for (var i=0; i < Object.keys(object).length; i++) {
+    var key = Object.keys(object)[i];
+    var fetchedValue = object[key];
+    if (value === fetchedValue) {
+      return key;
+    }
+  }
 }
