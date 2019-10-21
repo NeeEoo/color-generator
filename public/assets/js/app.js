@@ -224,7 +224,7 @@ function savePalette() {
       localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
       // Save color palette object
       localStorage.setItem(randomKey, JSON.stringify(rgbStorageObject));
-      $("#savedPalettesBody").append("<div id='"+randomKey+"' class='my-2 btn-group' role='group'><button class='btn btn-outline-secondary w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + randomKey + ")'><i class='far fa-trash-alt'></i></button></div>");
+      $("#savedPalettesBody").append("<div id='"+randomKey+"' class='my-2 d-flex' role='group'><button class='btn btn-outline-secondary w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + randomKey + ")'><i class='far fa-trash-alt'></i></button></div>");
       showToast("success", "Color palette saved.");
     } else {
       alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
@@ -240,7 +240,7 @@ function loadAllPalettes() {
     } else {
       $.each(JSON.parse(fetchedData), function(key, value) {
         var palette = localStorage.getItem(key);
-        $("#savedPalettesBody").append("<div id='"+value+"' class='my-2 btn-group' role='group'><button class='btn btn-outline-secondary w-100' onclick='loadPalette(" + value + ")'>" + key + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + value + ")'><i class='far fa-trash-alt'></i></button></div>");
+        $("#savedPalettesBody").append("<div id='"+value+"' class='my-2 d-flex' role='group'><button class='btn btn-outline-secondary w-100' onclick='loadPalette(" + value + ")'>" + key + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + value + ")'><i class='far fa-trash-alt'></i></button></div>");
         $("#editColorModal").modal("hide");
       });
       showToast("success", "Color palettes loaded.");
