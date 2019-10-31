@@ -102,6 +102,11 @@ body {
     color: #fff
 }
 
+#inputColor, #inputColumn, #inputColumn:active {
+    background-color: #202020;
+    color: #fff
+}
+
 @media (max-width: 768px) {
   .row {
     width: 100%
