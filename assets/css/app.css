@@ -93,6 +93,15 @@ body {
   width: 100%
 }
 
+.modal-content {
+    background-color: #202020;
+    color: #fff
+}
+
+.modal-content span, .modal-content span:hover {
+    color: #fff
+}
+
 @media (max-width: 768px) {
   .row {
     width: 100%
