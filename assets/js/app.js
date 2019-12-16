@@ -240,7 +240,7 @@ function loadAllPalettes() {
     } else {
       $.each(JSON.parse(fetchedData), function(key, value) {
         var palette = localStorage.getItem(key);
-        $("#savedPalettesBody").append("<div id='"+value+"' class='my-2 d-flex' role='group'><button class='btn btn-outline-secondary w-100' onclick='loadPalette(" + value + ")'>" + key + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + value + ")'><i class='far fa-trash-alt'></i></button></div>");
+        $("#savedPalettesBody").append("<div id='"+value+"' class='my-2 d-flex' role='group'><button class='btn btn-outline-secondary text-white w-100' onclick='loadPalette(" + value + ")'>" + key + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + value + ")'><i class='far fa-trash-alt'></i></button></div>");
         $("#editColorModal").modal("hide");
       });
       showToast("success", "Color palettes loaded.");
