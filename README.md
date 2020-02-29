@@ -7,4 +7,4 @@ Hosted at: [Color Generator](https://christian-cleberg.gitlab.io/color-generator
 Hey there! Looking to contribute? This project is object to all contributions, *as long as they add value*. You can open issues for any features you want or bugs you've found. Otherwise, fork the project and submit pull requests for anything you'd like to add.
 
 ## Preview
-![Preview Image](https://gitlab.com/christian-cleberg/axiom-web-app/-/raw/master/preview.png)
+![Preview Image](https://gitlab.com/christian-cleberg/color-generator/raw/master/preview.png)
