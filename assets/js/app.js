@@ -147,7 +147,7 @@ function getNewColor(e) {
 }
 
 function switchTheme() {
-  $("body").toggleClass("bg-secondary");
+  $("body").toggleClass("custom-bg");
   $(".fa-moon").toggleClass("d-none");
   $(".fa-sun").toggleClass("d-none");
   $(".color-column-labels").toggleClass("text-white");
@@ -224,7 +224,7 @@ function savePalette() {
       localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
       // Save color palette object
       localStorage.setItem(randomKey, JSON.stringify(rgbStorageObject));
-      $("#savedPalettesBody").append("<div id='"+randomKey+"' class='my-2 d-flex' role='group'><button class='btn btn-outline-secondary w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + randomKey + ")'><i class='far fa-trash-alt'></i></button></div>");
+      $("#savedPalettesBody").append("<div id='"+randomKey+"' class='my-2 d-flex'><div class='btn-group w-100' role='group' aria-label='Saved palette'><button class='btn btn-secondary w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button><button class='btn btn-danger' onclick='deletePalette(" + randomKey + ")'><i class='far fa-trash-alt'></i></button></div></div>");
       showToast("success", "Color palette saved.");
     } else {
       alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
@@ -236,11 +236,11 @@ function loadAllPalettes() {
   if (typeof(Storage) !== "undefined") {
     var fetchedData = localStorage.getItem("paletteKeys");
     if (fetchedData === null) {
-      console.log("Error: No palettes exist.");
+      console.log("Warning: No palettes exist.");
     } else {
       $.each(JSON.parse(fetchedData), function(key, value) {
         var palette = localStorage.getItem(key);
-        $("#savedPalettesBody").append("<div id='"+value+"' class='my-2 d-flex' role='group'><button class='btn btn-outline-secondary text-white w-100' onclick='loadPalette(" + value + ")'>" + key + "</button><button class='btn btn-outline-danger' onclick='deletePalette(" + value + ")'><i class='far fa-trash-alt'></i></button></div>");
+        $("#savedPalettesBody").append("<div id='"+value+"' class='my-2 d-flex'><div class='btn-group w-100' role='group' aria-label='Saved palette'><button class='btn btn-secondary w-100' onclick='loadPalette(" + value + ")'>" + key + "</button><button class='btn btn-danger' onclick='deletePalette(" + value + ")'><i class='far fa-trash-alt'></i></button></div></div>");
         $("#editColorModal").modal("hide");
       });
       showToast("success", "Color palettes loaded.");
@@ -329,7 +329,7 @@ function saveImage() {
   // Hide toolbar so it doesn't appear in screenshot
   $(".color-column-toolbar").hide();
   // Set background color of canvas based on body
-  var bgColor = $("body").hasClass("bg-secondary") ? "#000000" : "#FFFFFF";
+  var bgColor = $("body").hasClass("custom-bg") ? "#000000" : "#FFFFFF";
   // Get canvas and launch modal
   html2canvas(document.getElementsByClassName("container-fluid")[0], {backgroundColor:bgColor}).then(function(canvas) {
     $(".color-column-toolbar").show();
