@@ -153,6 +153,32 @@ function switchTheme() {
   $(".color-column-labels").toggleClass("text-white");
 }
 
+function storePalette(keysObject, paletteName) {
+  // Query object of all rgb colors and store text values in new object
+  var rgbDOMObject = $(".color-rgb");
+  var rgbStorageObject = {
+    "0": $(rgbDOMObject[0]).text().replace("(", "").replace(")", ""),
+    "1": $(rgbDOMObject[1]).text().replace("(", "").replace(")", ""),
+    "2": $(rgbDOMObject[2]).text().replace("(", "").replace(")", ""),
+    "3": $(rgbDOMObject[3]).text().replace("(", "").replace(")", ""),
+    "4": $(rgbDOMObject[4]).text().replace("(", "").replace(")", "")
+  };
+  // Generate random key, ensure it doesn't exist already, then save the key in storage
+  var randomKey = generateRandomKey();
+  if (keysObject === null) {
+    var newKeysObject = {};
+    newKeysObject[paletteName] = randomKey;
+  } else {
+    var newKeysObject = keysObject;
+    newKeysObject[paletteName] = randomKey;
+  }
+  localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
+  // Save color palette object
+  localStorage.setItem(randomKey, JSON.stringify(rgbStorageObject));
+
+  return randomKey;
+}
+
 function savePalette() {
   // Get palette names object and user input of new palette name
   var keysObject = JSON.parse(localStorage.getItem("paletteKeys"));
@@ -162,73 +188,25 @@ function savePalette() {
   if (keysObject !== null && paletteName in keysObject) {
     nameCheck = true;
   }
-  // If the input name is null or empty, show an error alert
-  if (paletteName === null || paletteName == "undefined" || paletteName == "") {
-    alert("Error: You must enter a valid name for this palette.");
-  }
-  // If the name exists, ask user to confirm
-  else if (keysObject != null && nameCheck === true) {
-    var userConfirmation = confirm("Palette name exists. Do you want to overwrite this palette?");
-    // If the user confirms, save the palette
-    if (userConfirmation) {
-      if (typeof(Storage) !== "undefined") {
-        // Query object of all rgb colors and store text values in new object
-        var rgbDOMObject = $(".color-rgb");
-        var rgbStorageObject = {
-          "0": $(rgbDOMObject[0]).text().replace("(", "").replace(")", ""),
-          "1": $(rgbDOMObject[1]).text().replace("(", "").replace(")", ""),
-          "2": $(rgbDOMObject[2]).text().replace("(", "").replace(")", ""),
-          "3": $(rgbDOMObject[3]).text().replace("(", "").replace(")", ""),
-          "4": $(rgbDOMObject[4]).text().replace("(", "").replace(")", "")
-        };
-        // Generate random key, ensure it doesn't exist already, then save the key in storage
-        var randomKey = generateRandomKey();
-        if (keysObject === null) {
-          var newKeysObject = {};
-          newKeysObject[paletteName] = randomKey;
-        } else {
-          var newKeysObject = keysObject;
-          newKeysObject[paletteName] = randomKey;
-        }
-        localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
-        // Save color palette object
-        localStorage.setItem(randomKey, JSON.stringify(rgbStorageObject));
+  if (typeof(Storage) !== "undefined") {
+    // If the input name is null or empty, show an error alert
+    if (paletteName === null || paletteName == "undefined" || paletteName == "") {
+      alert("Error: You must enter a valid name for this palette.");
+    } else if (keysObject != null && nameCheck === true) { // If the name exists, ask user to confirm
+      var userConfirmation = confirm("Palette name exists. Do you want to overwrite this palette?");
+      // If the user confirms, save the palette
+      if (userConfirmation) {
+        var randomKey = storePalette(keysObject, paletteName);
         $("#savedPalettesBody").append("<button class='btn btn-outline-secondary my-2 w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button>");
         showToast("success", "Color palette saved.");
-      } else {
-        alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
       }
-    }
-  }
-  // If the name doesn't exist, save palette
-  else {
-    if (typeof(Storage) !== "undefined") {
-      // Query object of all rgb colors and store text values in new object
-      var rgbDOMObject = $(".color-rgb");
-      var rgbStorageObject = {
-        "0": $(rgbDOMObject[0]).text().replace("(", "").replace(")", ""),
-        "1": $(rgbDOMObject[1]).text().replace("(", "").replace(")", ""),
-        "2": $(rgbDOMObject[2]).text().replace("(", "").replace(")", ""),
-        "3": $(rgbDOMObject[3]).text().replace("(", "").replace(")", ""),
-        "4": $(rgbDOMObject[4]).text().replace("(", "").replace(")", "")
-      };
-      // Generate random key, ensure it doesn't exist already, then save the key in storage
-      var randomKey = generateRandomKey();
-      if (keysObject === null) {
-        var newKeysObject = {};
-        newKeysObject[paletteName] = randomKey;
-      } else {
-        var newKeysObject = keysObject;
-        newKeysObject[paletteName] = randomKey;
-      }
-      localStorage.setItem("paletteKeys", JSON.stringify(newKeysObject));
-      // Save color palette object
-      localStorage.setItem(randomKey, JSON.stringify(rgbStorageObject));
+    } else { // If the name doesn't exist, save palette
+      var randomKey = storePalette(keysObject, paletteName);
       $("#savedPalettesBody").append("<div id='"+randomKey+"' class='my-2 d-flex'><div class='btn-group w-100' role='group' aria-label='Saved palette'><button class='btn btn-secondary w-100' onclick='loadPalette(" + randomKey + ")'>" + paletteName + "</button><button class='btn btn-danger' onclick='deletePalette(" + randomKey + ")'><i class='far fa-trash-alt'></i></button></div></div>");
       showToast("success", "Color palette saved.");
-    } else {
-      alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
     }
+  } else {
+    alert("Sorry, your browser does not support Web Storage. Please ugrade your browser and try again.");
   }
 }
 
